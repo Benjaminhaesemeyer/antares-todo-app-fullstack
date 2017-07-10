@@ -14,7 +14,7 @@ var config = {
 var pool = new pg.Pool(config);
 
 router.post('/', function(req, res){
-  console.log(req.body);
+  console.log('in post route', req.body);
   pool.connect(function(errConnectingToDatabase, db, done){
     if(errConnectingToDatabase) {
       console.log('There was an error connecting to the database', errConnectingToDatabase);
@@ -27,6 +27,26 @@ router.post('/', function(req, res){
           res.sendStatus(500);
         } else {
           res.sendStatus(201);
+        }
+      });
+    }
+  });
+});
+
+router.get('/', function(req, res){
+  console.log('in get tasks route');
+  pool.connect(function(errConnectingToDatabase, db, done){
+    if(errConnectingToDatabase) {
+      console.log('There was an error connecting to the database', errConnectingToDatabase);
+      res.sendStatus(500);
+    } else {
+      db.query('SELECT * FROM tasks', function(errMakingQuery, result){
+        done();
+        if(errMakingQuery) {
+          console.log('There was an error making the SELECT query', errMakingQuery);
+          res.sendStatus(500);
+        } else {
+          res.send(result.rows);
         }
       });
     }
