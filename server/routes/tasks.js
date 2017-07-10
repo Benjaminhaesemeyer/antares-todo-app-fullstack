@@ -53,7 +53,7 @@ router.get('/', function(req, res){
   });
 });
 
-router.put('/:id', function(req, res){
+router.put('/complete/:id', function(req, res){
   console.log('in put route', req.params);
   pool.connect(function(errConnectingToDatabase, db, done){
     if(errConnectingToDatabase) {
@@ -61,6 +61,26 @@ router.put('/:id', function(req, res){
       res.sendStatus(500);
     } else {
       db.query('UPDATE tasks SET is_complete=TRUE WHERE id=$1;', [req.params.id], function(errMakingQuery, result){
+        done();
+        if(errMakingQuery) {
+          console.log('There was an error making the INSERT query', errMakingQuery);
+          res.sendStatus(500);
+        } else {
+          res.sendStatus(200);
+        }
+      });
+    }
+  });
+});
+
+router.put('/undoComplete/:id', function(req, res){
+  console.log('in put route', req.params);
+  pool.connect(function(errConnectingToDatabase, db, done){
+    if(errConnectingToDatabase) {
+      console.log('There was an error connecting to the database', errConnectingToDatabase);
+      res.sendStatus(500);
+    } else {
+      db.query('UPDATE tasks SET is_complete=FALSE WHERE id=$1;', [req.params.id], function(errMakingQuery, result){
         done();
         if(errMakingQuery) {
           console.log('There was an error making the INSERT query', errMakingQuery);

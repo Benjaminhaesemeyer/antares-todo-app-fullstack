@@ -37,7 +37,21 @@ $(document).ready(function(){
 
     $.ajax({
       type: 'PUT',
-      url: '/tasks/' + $(this).data().id,
+      url: '/tasks/complete/' + $(this).data().id,
+      success: function(response) {
+        console.log(response);
+        getAllTasks();
+      }
+    });
+  });
+
+  $('#taskTableBody').on('click', '.undoCompleteTaskButton', function() {
+    console.log('logging $(this)', $(this));
+    console.log('The data on that button', $(this).data().id);
+
+    $.ajax({
+      type: 'PUT',
+      url: '/tasks/undoComplete/' + $(this).data().id,
       success: function(response) {
         console.log(response);
         getAllTasks();
