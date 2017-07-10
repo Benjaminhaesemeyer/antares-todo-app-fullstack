@@ -59,6 +59,22 @@ $(document).ready(function(){
     });
   });
 
+  //task delete button click
+$('#taskTableBody').on('click', '.deleteBtn', function(){
+  console.log('logging $(this)', $(this));
+  console.log('The data on that button', $(this).data().id);
+
+$.ajax({
+  type: 'DELETE',
+  url: '/tasks/' + $(this).data().id,
+  success: function(response) {
+    console.log(response);
+    console.log('I deleted the task!');
+    getAllTasks();
+  }
+});
+}); // end of delete task button
+
   function appendTasksToDOM(taskList) {
     console.log('appending items to DOM');
     $('#taskTableBody').empty();
@@ -67,7 +83,7 @@ $(document).ready(function(){
       var taskToAppend = taskList[i];
       // append task to the DOM
       var $tr = $('<tr></tr>');
-      $tr.append('<td>' + taskToAppend.name + '</td>');
+
       var $buttonTd = $('<td></td>');
       var $button;
       if(taskToAppend.is_complete === false) {
@@ -79,7 +95,28 @@ $(document).ready(function(){
       $button.data('id', taskToAppend.id);
       $buttonTd.append($button);
       $tr.append($buttonTd);
+      //append the task
+      $tr.append('<td>' + taskToAppend.name + '</td>');
+      $tr.append('<td><button class="deleteBtn">' + taskToAppend.id + '">Delete</button></td>');
       $('#taskTableBody').append($tr);
     }
   }
+
+  function deleteTask(taskid) {
+    console.log('task id = ', taskid);
+    // When using URL params, your url would be...
+    // '/todo/' + taskkId
+
+    // YOUR AJAX CODE HERE
+    $.ajax({
+      type: 'DELETE',
+      url: '/tasks/' + $(this).data().id,
+      success: function(response) {
+        console.log(response);
+        console.log('I deleted the task!');
+        getAllTasks();
+      }
+    });
+  }
+
 });
